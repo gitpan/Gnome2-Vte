@@ -1,18 +1,23 @@
 package Gnome2::Vte;
 
-# $Header: /cvsroot/gtk2-perl/gtk2-perl-xs/Gnome2-Vte/Vte.pm,v 1.5 2003/12/22 17:13:15 kaffeetisch Exp $
+# $Header: /cvsroot/gtk2-perl/gtk2-perl-xs/Gnome2-Vte/Vte.pm,v 1.8 2004/06/04 23:32:18 kaffeetisch Exp $
 
 use 5.008;
 use strict;
 use warnings;
 
-use Gtk2 -init;
+use Gtk2;
 
 require DynaLoader;
 
 our @ISA = qw(DynaLoader);
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
+
+sub import {
+  my $self = shift();
+  $self -> VERSION(@_);
+}
 
 sub dl_load_flags { 0x01 }
 

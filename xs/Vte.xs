@@ -15,12 +15,12 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- * $Header: /cvsroot/gtk2-perl/gtk2-perl-xs/Gnome2-Vte/xs/Vte.xs,v 1.1 2003/11/25 21:28:00 kaffeetisch Exp $
+ * $Header: /cvsroot/gtk2-perl/gtk2-perl-xs/Gnome2-Vte/xs/Vte.xs,v 1.3 2004/03/03 19:34:16 kaffeetisch Exp $
  */
 
 #include "vte2perl.h"
 
-MODULE = Gnome2::Vte	PACKAGE = Gnome2::Vte	PREFIX = vte_
+MODULE = Gnome2::Vte	PACKAGE = Gnome2::Vte
 
 =for object Gnome2::Vte::main
 
@@ -31,15 +31,16 @@ BOOT:
 #include "boot.xsh"
 
 void
-vte_get_version_info (class)
+GET_VERSION_INFO (class)
     PPCODE:
 	EXTEND (SP, 3);
 	PUSHs (sv_2mortal (newSViv (VTE_MAJOR_VERSION)));
 	PUSHs (sv_2mortal (newSViv (VTE_MINOR_VERSION)));
 	PUSHs (sv_2mortal (newSViv (VTE_MICRO_VERSION)));
+	PERL_UNUSED_VAR (ax);
 
 bool
-vte_check_version (class, major, minor, micro)
+CHECK_VERSION (class, major, minor, micro)
 	int major
 	int minor
 	int micro

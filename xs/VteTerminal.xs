@@ -15,7 +15,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- * $Header: /cvsroot/gtk2-perl/gtk2-perl-xs/Gnome2-Vte/xs/VteTerminal.xs,v 1.3 2003/11/28 21:35:15 kaffeetisch Exp $
+ * $Header: /cvsroot/gtk2-perl/gtk2-perl-xs/Gnome2-Vte/xs/VteTerminal.xs,v 1.6 2004/06/04 23:26:45 kaffeetisch Exp $
  */
 
 #include "vte2perl.h"
@@ -26,7 +26,7 @@ char **SvVteCharArray (SV *ref)
 {
 	char **result = NULL;
 
-	if (SvOK (ref))
+	if (SvOK (ref)) {
 		if (SvRV (ref) && SvTYPE (SvRV (ref)) == SVt_PVAV) {
 			AV *array = (AV *) SvRV (ref);
 			SV **string;
@@ -42,6 +42,7 @@ char **SvVteCharArray (SV *ref)
 		}
 		else
 			croak ("the argument and environment parameters must be array references");
+	}
 
 	return result;
 }
@@ -50,7 +51,7 @@ GdkColor *SvVteGdkColorArray (SV *ref, glong *size)
 {
 	GdkColor *result = NULL;
 
-	if (SvOK (ref))
+	if (SvOK (ref)) {
 		if (SvRV (ref) && SvTYPE (SvRV (ref)) == SVt_PVAV) {
 			AV *array = (AV *) SvRV (ref);
 			SV **color;
@@ -66,6 +67,7 @@ GdkColor *SvVteGdkColorArray (SV *ref, glong *size)
 		}
 		else
 			croak ("the pallete parameter must be a reference to an array of GdkColor's");
+	}
 
 	return result;
 }
@@ -158,7 +160,6 @@ vte_terminal_fork_command (terminal, command, arg_ref, env_ref, directory, lastl
 	gboolean wtmp
     PREINIT:
 	char **argv, **envv;
-	int i;
     CODE:
 	argv = SvVteCharArray (arg_ref);
 	envv = SvVteCharArray (env_ref);
@@ -289,6 +290,22 @@ vte_terminal_set_color_dim (terminal, dim)
 	VteTerminal *terminal
 	const GdkColor *dim
 
+#if VTE_CHECK_VERSION (0, 11, 11)
+
+##  void vte_terminal_set_color_cursor (VteTerminal *terminal, const GdkColor *cursor_background)
+void
+vte_terminal_set_color_cursor (terminal, cursor_background)
+	VteTerminal *terminal
+	const GdkColor *cursor_background
+
+##  void vte_terminal_set_color_highlight (VteTerminal *terminal, const GdkColor *highlight_background)
+void
+vte_terminal_set_color_highlight (terminal, highlight_background)
+	VteTerminal *terminal
+	const GdkColor *highlight_background
+
+#endif
+
 ##  void vte_terminal_set_colors(VteTerminal *terminal, const GdkColor *foreground, const GdkColor *background, const GdkColor *palette, glong palette_size) 
 void
 vte_terminal_set_colors (terminal, foreground, background, palette_ref)
@@ -339,6 +356,22 @@ vte_terminal_set_background_transparent (terminal, transparent)
 	VteTerminal *terminal
 	gboolean transparent
 
+#if VTE_CHECK_VERSION (0, 11, 0)
+
+##  void vte_terminal_set_background_tint_color(VteTerminal *terminal, const GdkColor *color) 
+void
+vte_terminal_set_background_tint_color (terminal, color)
+	VteTerminal *terminal
+	const GdkColor *color
+
+##  void vte_terminal_set_scroll_background(VteTerminal *terminal, gboolean scroll) 
+void
+vte_terminal_set_scroll_background (terminal, scroll)
+	VteTerminal *terminal
+	gboolean scroll
+
+#endif
+
 ##  void vte_terminal_set_cursor_blinks(VteTerminal *terminal, gboolean blink) 
 void
 vte_terminal_set_cursor_blinks (terminal, blink)
@@ -362,6 +395,24 @@ void
 vte_terminal_set_font_from_string (terminal, name)
 	VteTerminal *terminal
 	const char *name
+
+#if VTE_CHECK_VERSION (0, 11, 11)
+
+##  void vte_terminal_set_font_full(VteTerminal *terminal, const PangoFontDescription *font_desc, VteTerminalAntiAlias anti_alias)
+void
+vte_terminal_set_font_full (terminal, font_desc, anti_alias)
+	VteTerminal *terminal
+	const PangoFontDescription *font_desc
+	VteTerminalAntiAlias anti_alias
+
+##  void vte_terminal_set_font_from_string_full(VteTerminal *terminal, const char *name, VteTerminalAntiAlias anti_alias)
+void
+vte_terminal_set_font_from_string_full (terminal, name, anti_alias)
+	VteTerminal *terminal
+	const char *name
+	VteTerminalAntiAlias anti_alias
+
+#endif
 
 ## const PangoFontDescription *vte_terminal_get_font(VteTerminal *terminal)
 PangoFontDescription *
@@ -523,6 +574,28 @@ vte_terminal_match_check (VteTerminal *terminal, glong column, glong row, OUTLIS
     CLEANUP:
 	g_free (RETVAL);
 
+#if VTE_CHECK_VERSION (0, 11, 0)
+
+##  void vte_terminal_match_set_cursor(VteTerminal *terminal, int tag, GdkCursor *cursor) 
+void
+vte_terminal_match_set_cursor (terminal, tag, cursor)
+	VteTerminal *terminal
+	int tag
+	GdkCursor *cursor
+
+#endif
+
+#if VTE_CHECK_VERSION (0, 11, 9)
+
+##  void vte_terminal_match_set_cursor_type(VteTerminal *terminal, int tag, GdkCursorType cursor_type) 
+void
+vte_terminal_match_set_cursor_type (terminal, tag, cursor_type)
+	VteTerminal *terminal
+	int tag
+	GdkCursorType cursor_type
+
+#endif
+
 ##  void vte_terminal_set_emulation(VteTerminal *terminal, const char *emulation) 
 void
 vte_terminal_set_emulation (terminal, emulation)
@@ -598,35 +671,3 @@ vte_terminal_get_row_count (terminal)
 const char *
 vte_terminal_get_window_title (terminal)
 	VteTerminal *terminal
-
-# --------------------------------------------------------------------------- #
-
-# These aren't documented and therefor not implemented.  Scream if you need
-# them.
-
-###  void vte_terminal_set_scroll_background(VteTerminal *terminal, gboolean scroll) 
-#void
-#vte_terminal_set_scroll_background (terminal, scroll)
-#	VteTerminal *terminal
-#	gboolean scroll
-
-###  void vte_terminal_set_background_tint_color(VteTerminal *terminal, const GdkColor *color) 
-#void
-#vte_terminal_set_background_tint_color (terminal, color)
-#	VteTerminal *terminal
-#	const GdkColor *color
-
-###  void vte_terminal_match_set_cursor(VteTerminal *terminal, int tag, GdkCursor *cursor) 
-#void
-#vte_terminal_match_set_cursor (terminal, tag, cursor)
-#	VteTerminal *terminal
-#	int tag
-#	GdkCursor *cursor
-
-###  void vte_terminal_match_set_cursor_type(VteTerminal *terminal, int tag, GdkCursorType cursor_type) 
-#void
-#vte_terminal_match_set_cursor_type (terminal, tag, cursor_type)
-#	VteTerminal *terminal
-#	int tag
-#	GdkCursorType cursor_type
-

@@ -1,9 +1,16 @@
 #!/usr/bin/perl -w
 use strict;
-use Test::More tests => 26;
+use Test::More;
 use Gnome2::Vte;
 
-# $Header: /cvsroot/gtk2-perl/gtk2-perl-xs/Gnome2-Vte/t/VteTerminal.t,v 1.1 2003/11/25 21:28:00 kaffeetisch Exp $
+# $Header: /cvsroot/gtk2-perl/gtk2-perl-xs/Gnome2-Vte/t/VteTerminal.t,v 1.5 2004/06/04 23:26:45 kaffeetisch Exp $
+
+unless (Gtk2 -> init_check()) {
+  plan skip_all => "Couldn't initialize Gtk2";
+}
+else {
+  plan tests => 25;
+}
 
 ###############################################################################
 
@@ -47,14 +54,22 @@ is($terminal -> get_allow_bold(), 1);
 $terminal -> set_scroll_on_output(1);
 $terminal -> set_scroll_on_keystroke(1);
 
-my $white = Gtk2::Gdk::Color -> new(0, 0, 0);
-my $black = Gtk2::Gdk::Color -> new(255, 255, 255);
+my $white = Gtk2::Gdk::Color -> new(0xFFFF, 0xFFFF, 0xFFFF);
+my $black = Gtk2::Gdk::Color -> new(0, 0, 0);
 
 $terminal -> set_color_bold($black);
 $terminal -> set_color_foreground($black);
 $terminal -> set_color_background($white);
 $terminal -> set_color_dim($black);
 $terminal -> set_colors($black, $white, [$white, $black, $white, $black, $white, $black, $white, $black]);
+
+SKIP: {
+  skip("set_color_cursor and set_color_highlight are new in 0.11.11", 0)
+    unless (Gnome2::Vte -> CHECK_VERSION(0, 11, 11));
+
+  $terminal -> set_color_cursor($black);
+  $terminal -> set_color_highlight($black);
+}
 
 $terminal -> set_default_colors();
 
@@ -63,14 +78,29 @@ $terminal -> set_default_colors();
 $terminal -> set_background_saturation(0.5);
 $terminal -> set_background_transparent(0.5);
 
+SKIP: {
+  skip("set_tint_color and set_scroll_background are new in 0.11.0", 0)
+    unless (Gnome2::Vte -> CHECK_VERSION(0, 11, 0));
+
+  $terminal -> set_background_tint_color($black);
+  $terminal -> set_scroll_background(1);
+}
+
 $terminal -> set_cursor_blinks(1);
 $terminal -> set_scrollback_lines(100);
 
 $terminal -> set_font(Gtk2::Pango::FontDescription -> from_string("Monospace 10"));
-is($terminal -> get_font() -> to_string(), "Monospace 10");
-
 $terminal -> set_font_from_string("Sans 12");
-is($terminal -> get_font() -> to_string(), "Sans 12");
+
+SKIP: {
+  skip("set_font_full and set_font_from_string_full are new in 0.10.11", 0)
+    unless (Gnome2::Vte -> CHECK_VERSION(0, 11, 11));
+
+  $terminal -> set_font_full(Gtk2::Pango::FontDescription -> from_string("Monospace 10"), "use-default");
+  $terminal -> set_font_from_string_full("Sans 12", "force-disable");
+}
+
+isa_ok($terminal -> get_font(), "Gtk2::Pango::FontDescription");
 
 like($terminal -> get_using_xft(), qr/^(?:|1)$/);
 ok(not $terminal -> get_has_selection());
@@ -97,9 +127,24 @@ is_deeply([$terminal -> get_cursor_position()], [0, 0]);
 $terminal -> match_clear_all();
 
 my $id = $terminal -> match_add(".*");
-$terminal -> match_remove($id);
 
-# $terminal -> match_check();
+# $terminal -> match_check(0, 10);
+
+SKIP: {
+  skip("match_set_cursor is new in 0.11.0", 0)
+    unless (Gnome2::Vte -> CHECK_VERSION(0, 11, 0));
+
+  $terminal -> match_set_cursor($id, Gtk2::Gdk::Cursor -> new("arrow"));
+}
+
+SKIP: {
+  skip("match_set_cursor_type is new in 0.11.9", 0)
+    unless (Gnome2::Vte -> CHECK_VERSION(0, 11, 9));
+
+  $terminal -> match_set_cursor_type($id, "arrow");
+}
+
+$terminal -> match_remove($id);
 
 $terminal -> set_emulation("xterm-color");
 is($terminal -> get_emulation(), "xterm-color");

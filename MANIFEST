@@ -1,14 +1,16 @@
 ChangeLog
-genmaps.pl
 LICENSE
-Makefile.PL
 MANIFEST			This list of files
 MANIFEST.SKIP
-maps
 META.yml			Module meta-data (added by MakeMaker)
+Makefile.PL
 README
-t/VteTerminal.t
 Vte.pm
+copyright.pod
+genmaps.pl
+maps
+perl-Gnome2-Vte.spec.in
+t/VteTerminal.t
 vte2perl.h
 xs/Vte.xs
 xs/VteTerminal.xs

@@ -1,3 +1,72 @@
+2004/06/05 01:31 (+0200) kaffeetisch
+
+	A NEWS
+	* MANIFEST
+	* Vte.pm: Version 0.03.
+
+2004/06/05 01:25 (+0200) kaffeetisch
+
+	* t/VteTerminal.t
+	* xs/VteTerminal.xs: Bind and test set_color_cursor,
+	set_color_highlight, set_background_tint_color,
+	set_scroll_background, match_set_cursor, and
+	match_set_cursor_type.
+
+2004/04/27 20:27 (+0200) kaffeetisch
+
+	* maps
+	* t/VteTerminal.t
+	* xs/VteTerminal.xs: Bind and test set_font_full and
+	set_font_from_string_full.
+
+2004/04/24 22:57 (+0200) kaffeetisch
+
+	* Vte.pm: Add a import method to enable version checking.
+
+	* t/VteTerminal.t: Use correct color values.
+
+2004/03/03 20:35 (+0100) kaffeetisch
+
+	* xs/Vte.xs: Adapt to the new version information implementation
+	policy.
+
+2004/02/14 16:39 (+0100) kaffeetisch
+
+	A copyright.pod
+	* Makefile.PL: Switch to the new EU::Depends and ::PkgConfig
+	versions.
+
+2004/01/24 21:44 (-0500) rwmcfa1
+
+	* Makefile.PL: removed runtime_reqs stuff, replaced by the pkg-config 
+	trick
+	
+	* perl-Gnome2-Vte.spec.in: use pkg-config for Requires version
+
+2004/01/02 15:09 (-0500) rwmcfa1
+
+	* Makefile.PL: rpm stuff added
+
+	* perl-Gnome2-Vte.spec.in: initial import
+
+2003/12/31 02:23 (-0500) muppetman
+
+	* xs/Vte.xs: mark ax unused in functions which don't touch the input
+	stack, to hush compiler warnings.
+	
+	* xs/VteTerminal.xs: use disambiguating braces to hush compiler
+	warnings
+
+2003/12/28 00:54 (+0100) kaffeetisch
+
+	* Vte.pm: Don't initialize Gtk2.
+
+	* t/VteTerminal.t: Skip all tests if Gtk2 can't be initialized.
+
+2003/12/23 01:30 (+0100) kaffeetisch
+
+	* Makefile.PL: Don't call do_pod_files twice.
+
 2003/12/22 18:12 (+0100) kaffeetisch
 
 	* META.yml
