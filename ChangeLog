@@ -1,0 +1,24 @@
+2003/11/28 22:34 (+0100) kaffeetisch
+
+	A META.yml
+	* MANIFEST: Prepare the release of 0.01.
+
+	* xs/VteTerminal.xs: Add API documentation.
+
+2003/11/26 21:31 (+0100) kaffeetisch
+
+	* xs/VteTerminal.xs: Use vte_char_attributes instead of
+	VteCharAttributes if the latter is not available.
+
+2003/11/25 22:16 (+0100) kaffeetisch
+
+	A LICENSE
+	A MANIFEST
+	A Makefile.PL
+	A Vte.pm
+	A genmaps.pl
+	A maps
+	A vte2perl.h
+	A t/VteTerminal.t
+	A xs/Vte.xs
+	A xs/VteTerminal.xs: Initial import.

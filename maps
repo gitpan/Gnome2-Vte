@@ -1,0 +1,2 @@
+VTE_TYPE_TERMINAL	VteTerminal	GtkObject	Gnome2::Vte::Terminal
+VTE_TYPE_TERMINAL_ERASE_BINDING	VteTerminalEraseBinding	GEnum	Gnome2::Vte::TerminalEraseBinding
