@@ -1,3 +1,30 @@
+2003/12/22 18:12 (+0100) kaffeetisch
+
+	* META.yml
+	* Vte.pm: Version 0.02.
+
+2003/12/18 22:18 (+0100) kaffeetisch
+
+	* Vte.pm: Mention Gnome2::Vte::index.
+
+2003/12/12 23:35 (+0100) kaffeetisch
+
+	A README
+	* MANIFEST: Add a README.
+
+	* Vte.pm: Be more verbose in the NAME section.  Add copyright
+	notice.
+
+2003/12/06 01:02 (+0100) kaffeetisch
+
+	* Vte.pm: Change the abstract and the synopsis to actually refer
+	to Vte, not Wnck.  (Whoops, c'n'p bug.)
+
+2003/11/30 15:24 (+0100) kaffeetisch
+
+	A MANIFEST.SKIP
+	* MANIFEST: Imported a skip file.
+
 2003/11/28 22:34 (+0100) kaffeetisch
 
 	A META.yml

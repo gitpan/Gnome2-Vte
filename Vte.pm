@@ -1,6 +1,6 @@
 package Gnome2::Vte;
 
-# $Header: /cvsroot/gtk2-perl/gtk2-perl-xs/Gnome2-Vte/Vte.pm,v 1.1 2003/11/25 21:28:00 kaffeetisch Exp $
+# $Header: /cvsroot/gtk2-perl/gtk2-perl-xs/Gnome2-Vte/Vte.pm,v 1.5 2003/12/22 17:13:15 kaffeetisch Exp $
 
 use 5.008;
 use strict;
@@ -12,7 +12,7 @@ require DynaLoader;
 
 our @ISA = qw(DynaLoader);
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 sub dl_load_flags { 0x01 }
 
@@ -23,30 +23,36 @@ __END__
 
 =head1 NAME
 
-Gnome2::Vte - Perl interface to the VTE library
+Gnome2::Vte - Perl interface to the Virtual Terminal Emulation library
 
 =head1 SYNOPSIS
 
-  use Gnome2::Wnck;
-  Gtk2 -> init();
+  use Gnome2::Vte;
 
-  my $screen = Gnome2::Wnck::Screen -> get_default();
-  $screen -> force_update();
+  my $window = Gtk2::Window -> new("toplevel");
+  my $terminal = Gnome2::Vte::Terminal -> new();
 
-  my $pager = Gnome2::Wnck::Pager -> new($screen);
-  my $tasklist = Gnome2::Wnck::Tasklist -> new($screen);
+  $window -> add($terminal);
+  $window -> show_all();
+
+  Gtk2 -> main();
 
 =head1 ABSTRACT
 
-This module allows a Perl developer to use the Window Navigator Construction
-Kit library (libwnck for short) to write tasklists and pagers.
+This module allows a Perl developer to use the Virtual Terminal Emulator
+library (libvte for short).
 
 =head1 SEE ALSO
 
-L<Gtk2>, L<Gtk2::api> and the source code of libwnck.
+L<Gnome2::Vte::index>(3pm), L<Gtk2>(3pm), L<Gtk2::api>(3pm) and
+L<http://developer.gnome.org/doc/API/2.0/vte/>.
 
 =head1 AUTHOR
 
 Torsten Schoenfeld E<lt>kaffeetisch@web.deE<gt>
+
+=head1 COPYRIGHT AND LICENSE
+
+Copyright (C) 2003 by the gtk2-perl team
 
 =cut
