@@ -1,3 +1,23 @@
+2004/08/08 15:02 (+0200) kaffeetisch
+
+	* MANIFEST, NEWS, Vte.pm: Version 0.04.
+
+2004/08/08 14:56 (+0200) kaffeetisch
+
+	* t/VteTerminal.t: Bind match_check, get_status_line,
+	get_icon_title, and get_window_title.
+
+	* t/VteTerminal.t, xs/VteTerminal.xs: Bind and test
+	get_default_emulation.
+
+2004/08/04 15:25 (+0200) kaffeetisch
+
+	* Vte.pm: Replace the old and broken synopsis by a new, better and
+	working one from muppet.
+
+	* t/VteTerminal.t, xs/VteTerminal.xs: Bind and test
+	get_text_include_trailing_spaces.
+
 2004/06/05 01:31 (+0200) kaffeetisch
 
 	A NEWS

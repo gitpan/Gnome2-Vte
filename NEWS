@@ -1,0 +1,15 @@
+Overview of changes in Gnome2::Vte 0.04
+=======================================
+
+* Replace the old and broken synopsis [muppet]
+* Bind and test get_text_include_trailing_spaces and get_default_emulation
+* Test match_check, get_status_line, get_icon_title, and get_window_title.
+
+Overview of changes in Gnome2::Vte 0.03
+=======================================
+
+* Various small fixes to the build environment and the test suite.
+* Newly wrapped methods: Gnome2::Vte::Terminal::set_font_full,
+set_font_from_string_full, set_color_cursor, set_color_highlight,
+set_background_tint_color, set_scroll_background, match_set_cursor, and
+match_set_cursor_type.

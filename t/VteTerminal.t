@@ -3,13 +3,13 @@ use strict;
 use Test::More;
 use Gnome2::Vte;
 
-# $Header: /cvsroot/gtk2-perl/gtk2-perl-xs/Gnome2-Vte/t/VteTerminal.t,v 1.5 2004/06/04 23:26:45 kaffeetisch Exp $
+# $Header: /cvsroot/gtk2-perl/gtk2-perl-xs/Gnome2-Vte/t/VteTerminal.t,v 1.7 2004/08/08 12:58:44 kaffeetisch Exp $
 
 unless (Gtk2 -> init_check()) {
   plan skip_all => "Couldn't initialize Gtk2";
 }
 else {
-  plan tests => 25;
+  plan tests => 39;
 }
 
 ###############################################################################
@@ -118,9 +118,26 @@ my ($text, $attributes) = $terminal -> get_text(sub { 1; });
 ok(defined($text));
 isa_ok($attributes, "ARRAY");
 
+SKIP: {
+  skip("get_text_include_trailing_spaces is new in 0.11.12", 2)
+    unless (Gnome2::Vte -> CHECK_VERSION(0, 11, 12));
+
+  ($text, $attributes) = $terminal -> get_text_include_trailing_spaces(sub { 1; });
+  ok(defined($text));
+  isa_ok($attributes, "ARRAY");
+}
+
 ($text, $attributes) = $terminal -> get_text_range(0, 0, 10, 10, sub { 1; });
 ok(defined($text));
 isa_ok($attributes, "ARRAY");
+
+isa_ok($attributes -> [0], "HASH");
+ok(exists($attributes -> [0] -> { strikethrough }));
+ok(exists($attributes -> [0] -> { underline }));
+ok(exists($attributes -> [0] -> { fore }));
+ok(exists($attributes -> [0] -> { back }));
+ok(exists($attributes -> [0] -> { row }));
+ok(exists($attributes -> [0] -> { column }));
 
 is_deeply([$terminal -> get_cursor_position()], [0, 0]);
 
@@ -128,7 +145,7 @@ $terminal -> match_clear_all();
 
 my $id = $terminal -> match_add(".*");
 
-# $terminal -> match_check(0, 10);
+ok(defined $terminal -> match_check(0, 10));
 
 SKIP: {
   skip("match_set_cursor is new in 0.11.0", 0)
@@ -149,10 +166,17 @@ $terminal -> match_remove($id);
 $terminal -> set_emulation("xterm-color");
 is($terminal -> get_emulation(), "xterm-color");
 
+SKIP: {
+  skip("get_default_emulation is new in 0.11.11", 1)
+    unless (Gnome2::Vte -> CHECK_VERSION(0, 11, 11));
+
+  ok(defined $terminal -> get_default_emulation());
+}
+
 $terminal -> set_encoding("ISO-8859-15");
 is($terminal -> get_encoding(), "ISO-8859-15");
 
-# $terminal -> get_status_line();
+is($terminal -> get_status_line(), "");
 
 is_deeply([$terminal -> get_padding()], [2, 2]);
 
@@ -162,8 +186,9 @@ like($terminal -> get_char_descent(), $number);
 like($terminal -> get_char_height(), $number);
 like($terminal -> get_char_width(), $number);
 like($terminal -> get_column_count(), $number);
-# $terminal -> get_icon_title();
 like($terminal -> get_row_count(), $number);
-# $terminal -> get_window_title();
+
+is($terminal -> get_icon_title(), undef);
+is($terminal -> get_window_title(), undef);
 
 $terminal -> reset(1, 1);
