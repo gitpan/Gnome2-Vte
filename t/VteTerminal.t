@@ -3,7 +3,7 @@ use strict;
 use Test::More;
 use Gnome2::Vte;
 
-# $Header: /cvsroot/gtk2-perl/gtk2-perl-xs/Gnome2-Vte/t/VteTerminal.t,v 1.7 2004/08/08 12:58:44 kaffeetisch Exp $
+# $Header: /cvsroot/gtk2-perl/gtk2-perl-xs/Gnome2-Vte/t/VteTerminal.t,v 1.8 2006/01/28 19:13:50 kaffeetisch Exp $
 
 unless (Gtk2 -> init_check()) {
   plan skip_all => "Couldn't initialize Gtk2";
@@ -163,8 +163,8 @@ SKIP: {
 
 $terminal -> match_remove($id);
 
-$terminal -> set_emulation("xterm-color");
-is($terminal -> get_emulation(), "xterm-color");
+$terminal -> set_emulation("xterm");
+is($terminal -> get_emulation(), "xterm");
 
 SKIP: {
   skip("get_default_emulation is new in 0.11.11", 1)

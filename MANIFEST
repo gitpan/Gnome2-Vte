@@ -8,7 +8,6 @@ NEWS
 README
 Vte.pm
 copyright.pod
-genmaps.pl
 maps
 perl-Gnome2-Vte.spec.in
 t/VteTerminal.t
