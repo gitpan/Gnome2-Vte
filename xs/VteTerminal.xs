@@ -1,21 +1,21 @@
 /*
  * Copyright (C) 2003 by the gtk2-perl team
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- * $Header: /cvsroot/gtk2-perl/gtk2-perl-xs/Gnome2-Vte/xs/VteTerminal.xs,v 1.8 2004/08/08 12:58:44 kaffeetisch Exp $
+ * $Header: /cvsroot/gtk2-perl/gtk2-perl-xs/Gnome2-Vte/xs/VteTerminal.xs,v 1.9 2006/07/14 18:20:10 kaffeetisch Exp $
  */
 
 #include "vte2perl.h"
@@ -72,7 +72,7 @@ GdkColor *SvVteGdkColorArray (SV *ref, glong *size)
 	return result;
 }
 
-#if !VTE_CHECK_VERSION (0, 11, 0)
+#if !VTE_CHECK_VERSION (0, 12, 0)
   typedef struct vte_char_attributes VteCharAttributes;
 #endif
 
@@ -135,19 +135,19 @@ vte2perl_is_selected (VteTerminal *terminal,
 
 MODULE = Gnome2::Vte::Terminal	PACKAGE = Gnome2::Vte::Terminal	PREFIX = vte_terminal_
 
-##  GtkWidget *vte_terminal_new(void) 
+##  GtkWidget *vte_terminal_new(void)
 GtkWidget *
 vte_terminal_new (class)
     C_ARGS:
 	/* void */
 
-##  void vte_terminal_im_append_menuitems(VteTerminal *terminal, GtkMenuShell *menushell) 
+##  void vte_terminal_im_append_menuitems(VteTerminal *terminal, GtkMenuShell *menushell)
 void
 vte_terminal_im_append_menuitems (terminal, menushell)
 	VteTerminal *terminal
 	GtkMenuShell *menushell
 
-##  pid_t vte_terminal_fork_command(VteTerminal *terminal, const char *command, char **argv, char **envv, const char *directory, gboolean lastlog, gboolean utmp, gboolean wtmp) 
+##  pid_t vte_terminal_fork_command(VteTerminal *terminal, const char *command, char **argv, char **envv, const char *directory, gboolean lastlog, gboolean utmp, gboolean wtmp)
 int
 vte_terminal_fork_command (terminal, command, arg_ref, env_ref, directory, lastlog, utmp, wtmp)
 	VteTerminal *terminal
@@ -178,119 +178,143 @@ vte_terminal_fork_command (terminal, command, arg_ref, env_ref, directory, lastl
     OUTPUT:
 	RETVAL
 
-##  void vte_terminal_feed(VteTerminal *terminal, const char *data, glong length) 
+##  void vte_terminal_feed(VteTerminal *terminal, const char *data, glong length)
 void
 vte_terminal_feed (terminal, data)
 	VteTerminal *terminal
-	const char *data
+	SV *data
+    PREINIT:
+	STRLEN len;
+	char *real_data;
     CODE:
-	vte_terminal_feed (terminal, data, strlen (data));
+	real_data = SvPV (data, len);
+	vte_terminal_feed (terminal, real_data, len);
 
-##  void vte_terminal_feed_child(VteTerminal *terminal, const char *data, glong length) 
+##  void vte_terminal_feed_child(VteTerminal *terminal, const char *data, glong length)
 void
 vte_terminal_feed_child (terminal, data)
 	VteTerminal *terminal
-	const char *data
+	SV *data
+    PREINIT:
+	STRLEN len;
+	char *real_data;
     CODE:
-	vte_terminal_feed_child (terminal, data, strlen (data));
+	real_data = SvPV (data, len);
+	vte_terminal_feed_child (terminal, real_data, len);
 
-##  void vte_terminal_copy_clipboard(VteTerminal *terminal) 
+#if VTE_CHECK_VERSION (0, 12, 1)
+
+##  void vte_terminal_feed_child_binary(VteTerminal *terminal, const char *data, glong length);
+void
+vte_terminal_feed_child_binary (terminal, data)
+	VteTerminal *terminal
+	SV *data
+    PREINIT:
+	STRLEN len;
+	char *real_data;
+    CODE:
+	real_data = SvPV (data, len);
+	vte_terminal_feed_child_binary (terminal, real_data, len);
+
+#endif
+
+##  void vte_terminal_copy_clipboard(VteTerminal *terminal)
 void
 vte_terminal_copy_clipboard (terminal)
 	VteTerminal *terminal
 
-##  void vte_terminal_paste_clipboard(VteTerminal *terminal) 
+##  void vte_terminal_paste_clipboard(VteTerminal *terminal)
 void
 vte_terminal_paste_clipboard (terminal)
 	VteTerminal *terminal
 
-##  void vte_terminal_copy_primary(VteTerminal *terminal) 
+##  void vte_terminal_copy_primary(VteTerminal *terminal)
 void
 vte_terminal_copy_primary (terminal)
 	VteTerminal *terminal
 
-##  void vte_terminal_paste_primary(VteTerminal *terminal) 
+##  void vte_terminal_paste_primary(VteTerminal *terminal)
 void
 vte_terminal_paste_primary (terminal)
 	VteTerminal *terminal
 
-##  void vte_terminal_set_size(VteTerminal *terminal, glong columns, glong rows) 
+##  void vte_terminal_set_size(VteTerminal *terminal, glong columns, glong rows)
 void
 vte_terminal_set_size (terminal, columns, rows)
 	VteTerminal *terminal
 	glong columns
 	glong rows
 
-##  void vte_terminal_set_audible_bell(VteTerminal *terminal, gboolean is_audible) 
+##  void vte_terminal_set_audible_bell(VteTerminal *terminal, gboolean is_audible)
 void
 vte_terminal_set_audible_bell (terminal, is_audible)
 	VteTerminal *terminal
 	gboolean is_audible
 
-##  gboolean vte_terminal_get_audible_bell(VteTerminal *terminal) 
+##  gboolean vte_terminal_get_audible_bell(VteTerminal *terminal)
 gboolean
 vte_terminal_get_audible_bell (terminal)
 	VteTerminal *terminal
 
-##  void vte_terminal_set_visible_bell(VteTerminal *terminal, gboolean is_visible) 
+##  void vte_terminal_set_visible_bell(VteTerminal *terminal, gboolean is_visible)
 void
 vte_terminal_set_visible_bell (terminal, is_visible)
 	VteTerminal *terminal
 	gboolean is_visible
 
-##  gboolean vte_terminal_get_visible_bell(VteTerminal *terminal) 
+##  gboolean vte_terminal_get_visible_bell(VteTerminal *terminal)
 gboolean
 vte_terminal_get_visible_bell (terminal)
 	VteTerminal *terminal
 
-##  void vte_terminal_set_allow_bold(VteTerminal *terminal, gboolean allow_bold) 
+##  void vte_terminal_set_allow_bold(VteTerminal *terminal, gboolean allow_bold)
 void
 vte_terminal_set_allow_bold (terminal, allow_bold)
 	VteTerminal *terminal
 	gboolean allow_bold
 
-##  gboolean vte_terminal_get_allow_bold(VteTerminal *terminal) 
+##  gboolean vte_terminal_get_allow_bold(VteTerminal *terminal)
 gboolean
 vte_terminal_get_allow_bold (terminal)
 	VteTerminal *terminal
 
-##  void vte_terminal_set_scroll_on_output(VteTerminal *terminal, gboolean scroll) 
+##  void vte_terminal_set_scroll_on_output(VteTerminal *terminal, gboolean scroll)
 void
 vte_terminal_set_scroll_on_output (terminal, scroll)
 	VteTerminal *terminal
 	gboolean scroll
 
-##  void vte_terminal_set_scroll_on_keystroke(VteTerminal *terminal, gboolean scroll) 
+##  void vte_terminal_set_scroll_on_keystroke(VteTerminal *terminal, gboolean scroll)
 void
 vte_terminal_set_scroll_on_keystroke (terminal, scroll)
 	VteTerminal *terminal
 	gboolean scroll
 
-##  void vte_terminal_set_color_bold(VteTerminal *terminal, const GdkColor *bold) 
+##  void vte_terminal_set_color_bold(VteTerminal *terminal, const GdkColor *bold)
 void
 vte_terminal_set_color_bold (terminal, bold)
 	VteTerminal *terminal
 	const GdkColor *bold
 
-##  void vte_terminal_set_color_foreground(VteTerminal *terminal, const GdkColor *foreground) 
+##  void vte_terminal_set_color_foreground(VteTerminal *terminal, const GdkColor *foreground)
 void
 vte_terminal_set_color_foreground (terminal, foreground)
 	VteTerminal *terminal
 	const GdkColor *foreground
 
-##  void vte_terminal_set_color_background(VteTerminal *terminal, const GdkColor *background) 
+##  void vte_terminal_set_color_background(VteTerminal *terminal, const GdkColor *background)
 void
 vte_terminal_set_color_background (terminal, background)
 	VteTerminal *terminal
 	const GdkColor *background
 
-##  void vte_terminal_set_color_dim(VteTerminal *terminal, const GdkColor *dim) 
+##  void vte_terminal_set_color_dim(VteTerminal *terminal, const GdkColor *dim)
 void
 vte_terminal_set_color_dim (terminal, dim)
 	VteTerminal *terminal
 	const GdkColor *dim
 
-#if VTE_CHECK_VERSION (0, 11, 11)
+#if VTE_CHECK_VERSION (0, 12, 0)
 
 ##  void vte_terminal_set_color_cursor (VteTerminal *terminal, const GdkColor *cursor_background)
 void
@@ -306,7 +330,7 @@ vte_terminal_set_color_highlight (terminal, highlight_background)
 
 #endif
 
-##  void vte_terminal_set_colors(VteTerminal *terminal, const GdkColor *foreground, const GdkColor *background, const GdkColor *palette, glong palette_size) 
+##  void vte_terminal_set_colors(VteTerminal *terminal, const GdkColor *foreground, const GdkColor *background, const GdkColor *palette, glong palette_size)
 void
 vte_terminal_set_colors (terminal, foreground, background, palette_ref)
 	VteTerminal *terminal
@@ -327,44 +351,44 @@ vte_terminal_set_colors (terminal, foreground, background, palette_ref)
 
 	g_free (palette);
 
-##  void vte_terminal_set_default_colors(VteTerminal *terminal) 
+##  void vte_terminal_set_default_colors(VteTerminal *terminal)
 void
 vte_terminal_set_default_colors (terminal)
 	VteTerminal *terminal
 
-##  void vte_terminal_set_background_image(VteTerminal *terminal, GdkPixbuf *image) 
+##  void vte_terminal_set_background_image(VteTerminal *terminal, GdkPixbuf *image)
 void
 vte_terminal_set_background_image (terminal, image)
 	VteTerminal *terminal
 	GdkPixbuf *image
 
-##  void vte_terminal_set_background_image_file(VteTerminal *terminal, const char *path) 
+##  void vte_terminal_set_background_image_file(VteTerminal *terminal, const char *path)
 void
 vte_terminal_set_background_image_file (terminal, path)
 	VteTerminal *terminal
 	const char *path
 
-##  void vte_terminal_set_background_saturation(VteTerminal *terminal, double saturation) 
+##  void vte_terminal_set_background_saturation(VteTerminal *terminal, double saturation)
 void
 vte_terminal_set_background_saturation (terminal, saturation)
 	VteTerminal *terminal
 	double saturation
 
-##  void vte_terminal_set_background_transparent(VteTerminal *terminal, gboolean transparent) 
+##  void vte_terminal_set_background_transparent(VteTerminal *terminal, gboolean transparent)
 void
 vte_terminal_set_background_transparent (terminal, transparent)
 	VteTerminal *terminal
 	gboolean transparent
 
-#if VTE_CHECK_VERSION (0, 11, 0)
+#if VTE_CHECK_VERSION (0, 12, 0)
 
-##  void vte_terminal_set_background_tint_color(VteTerminal *terminal, const GdkColor *color) 
+##  void vte_terminal_set_background_tint_color(VteTerminal *terminal, const GdkColor *color)
 void
 vte_terminal_set_background_tint_color (terminal, color)
 	VteTerminal *terminal
 	const GdkColor *color
 
-##  void vte_terminal_set_scroll_background(VteTerminal *terminal, gboolean scroll) 
+##  void vte_terminal_set_scroll_background(VteTerminal *terminal, gboolean scroll)
 void
 vte_terminal_set_scroll_background (terminal, scroll)
 	VteTerminal *terminal
@@ -372,31 +396,31 @@ vte_terminal_set_scroll_background (terminal, scroll)
 
 #endif
 
-##  void vte_terminal_set_cursor_blinks(VteTerminal *terminal, gboolean blink) 
+##  void vte_terminal_set_cursor_blinks(VteTerminal *terminal, gboolean blink)
 void
 vte_terminal_set_cursor_blinks (terminal, blink)
 	VteTerminal *terminal
 	gboolean blink
 
-##  void vte_terminal_set_scrollback_lines(VteTerminal *terminal, glong lines) 
+##  void vte_terminal_set_scrollback_lines(VteTerminal *terminal, glong lines)
 void
 vte_terminal_set_scrollback_lines (terminal, lines)
 	VteTerminal *terminal
 	glong lines
 
-##  void vte_terminal_set_font(VteTerminal *terminal, const PangoFontDescription *font_desc) 
+##  void vte_terminal_set_font(VteTerminal *terminal, const PangoFontDescription *font_desc)
 void
 vte_terminal_set_font (terminal, font_desc)
 	VteTerminal *terminal
 	const PangoFontDescription *font_desc
 
-##  void vte_terminal_set_font_from_string(VteTerminal *terminal, const char *name) 
+##  void vte_terminal_set_font_from_string(VteTerminal *terminal, const char *name)
 void
 vte_terminal_set_font_from_string (terminal, name)
 	VteTerminal *terminal
 	const char *name
 
-#if VTE_CHECK_VERSION (0, 11, 11)
+#if VTE_CHECK_VERSION (0, 12, 0)
 
 ##  void vte_terminal_set_font_full(VteTerminal *terminal, const PangoFontDescription *font_desc, VteTerminalAntiAlias anti_alias)
 void
@@ -423,52 +447,52 @@ vte_terminal_get_font (terminal)
     OUTPUT:
 	RETVAL
 
-##  gboolean vte_terminal_get_using_xft(VteTerminal *terminal) 
+##  gboolean vte_terminal_get_using_xft(VteTerminal *terminal)
 gboolean
 vte_terminal_get_using_xft (terminal)
 	VteTerminal *terminal
 
-##  gboolean vte_terminal_get_has_selection(VteTerminal *terminal) 
+##  gboolean vte_terminal_get_has_selection(VteTerminal *terminal)
 gboolean
 vte_terminal_get_has_selection (terminal)
 	VteTerminal *terminal
 
-##  void vte_terminal_set_word_chars(VteTerminal *terminal, const char *spec) 
+##  void vte_terminal_set_word_chars(VteTerminal *terminal, const char *spec)
 void
 vte_terminal_set_word_chars (terminal, spec)
 	VteTerminal *terminal
 	const char *spec
 
-##  gboolean vte_terminal_is_word_char(VteTerminal *terminal, gunichar c) 
+##  gboolean vte_terminal_is_word_char(VteTerminal *terminal, gunichar c)
 gboolean
 vte_terminal_is_word_char (terminal, c)
 	VteTerminal *terminal
 	gunichar c
 
-##  void vte_terminal_set_backspace_binding(VteTerminal *terminal, VteTerminalEraseBinding binding) 
+##  void vte_terminal_set_backspace_binding(VteTerminal *terminal, VteTerminalEraseBinding binding)
 void
 vte_terminal_set_backspace_binding (terminal, binding)
 	VteTerminal *terminal
 	VteTerminalEraseBinding binding
 
-##  void vte_terminal_set_delete_binding(VteTerminal *terminal, VteTerminalEraseBinding binding) 
+##  void vte_terminal_set_delete_binding(VteTerminal *terminal, VteTerminalEraseBinding binding)
 void
 vte_terminal_set_delete_binding (terminal, binding)
 	VteTerminal *terminal
 	VteTerminalEraseBinding binding
 
-##  void vte_terminal_set_mouse_autohide(VteTerminal *terminal, gboolean setting) 
+##  void vte_terminal_set_mouse_autohide(VteTerminal *terminal, gboolean setting)
 void
 vte_terminal_set_mouse_autohide (terminal, setting)
 	VteTerminal *terminal
 	gboolean setting
 
-##  gboolean vte_terminal_get_mouse_autohide(VteTerminal *terminal) 
+##  gboolean vte_terminal_get_mouse_autohide(VteTerminal *terminal)
 gboolean
 vte_terminal_get_mouse_autohide (terminal)
 	VteTerminal *terminal
 
-##  void vte_terminal_reset(VteTerminal *terminal, gboolean full, gboolean clear_history) 
+##  void vte_terminal_reset(VteTerminal *terminal, gboolean full, gboolean clear_history)
 void
 vte_terminal_reset (terminal, full, clear_history)
 	VteTerminal *terminal
@@ -509,7 +533,7 @@ vte_terminal_get_text (terminal, func, data=NULL)
 	g_array_free(attributes, TRUE);
 	g_free (text);
 
-#if VTE_CHECK_VERSION (0, 11, 12)
+#if VTE_CHECK_VERSION (0, 12, 0)
 
 =for apidoc
 
@@ -553,7 +577,7 @@ Returns the selected text and a reference to a VteCharAttributes array
 describing every character in that text.
 
 =cut
-##  char *vte_terminal_get_text_range(VteTerminal *terminal, glong start_row, glong start_col, glong end_row, glong end_col, gboolean(*is_selected)(VteTerminal *terminal, glong column, glong row, gpointer data), gpointer data, GArray *attributes) 
+##  char *vte_terminal_get_text_range(VteTerminal *terminal, glong start_row, glong start_col, glong end_row, glong end_col, gboolean(*is_selected)(VteTerminal *terminal, glong column, glong row, gpointer data), gpointer data, GArray *attributes)
 void
 vte_terminal_get_text_range (terminal, start_row, start_col, end_row, end_col, func, data=NULL)
 	VteTerminal *terminal
@@ -585,36 +609,36 @@ vte_terminal_get_text_range (terminal, start_row, start_col, end_row, end_col, f
 	g_array_free(attributes, TRUE);
 	g_free (text);
 
-##  void vte_terminal_get_cursor_position(VteTerminal *terminal, glong *column, glong *row) 
+##  void vte_terminal_get_cursor_position(VteTerminal *terminal, glong *column, glong *row)
 void
 vte_terminal_get_cursor_position (VteTerminal *terminal, OUTLIST glong column, OUTLIST glong row)
 
-##  void vte_terminal_match_clear_all(VteTerminal *terminal) 
+##  void vte_terminal_match_clear_all(VteTerminal *terminal)
 void
 vte_terminal_match_clear_all (terminal)
 	VteTerminal *terminal
 
-##  int vte_terminal_match_add(VteTerminal *terminal, const char *match) 
+##  int vte_terminal_match_add(VteTerminal *terminal, const char *match)
 int
 vte_terminal_match_add (terminal, match)
 	VteTerminal *terminal
 	const char *match
 
-##  void vte_terminal_match_remove(VteTerminal *terminal, int tag) 
+##  void vte_terminal_match_remove(VteTerminal *terminal, int tag)
 void
 vte_terminal_match_remove (terminal, tag)
 	VteTerminal *terminal
 	int tag
 
-##  char *vte_terminal_match_check(VteTerminal *terminal, glong column, glong row, int *tag) 
+##  char *vte_terminal_match_check(VteTerminal *terminal, glong column, glong row, int *tag)
 char *
 vte_terminal_match_check (VteTerminal *terminal, glong column, glong row, OUTLIST int tag)
     CLEANUP:
 	g_free (RETVAL);
 
-#if VTE_CHECK_VERSION (0, 11, 0)
+#if VTE_CHECK_VERSION (0, 12, 0)
 
-##  void vte_terminal_match_set_cursor(VteTerminal *terminal, int tag, GdkCursor *cursor) 
+##  void vte_terminal_match_set_cursor(VteTerminal *terminal, int tag, GdkCursor *cursor)
 void
 vte_terminal_match_set_cursor (terminal, tag, cursor)
 	VteTerminal *terminal
@@ -623,9 +647,9 @@ vte_terminal_match_set_cursor (terminal, tag, cursor)
 
 #endif
 
-#if VTE_CHECK_VERSION (0, 11, 9)
+#if VTE_CHECK_VERSION (0, 12, 0)
 
-##  void vte_terminal_match_set_cursor_type(VteTerminal *terminal, int tag, GdkCursorType cursor_type) 
+##  void vte_terminal_match_set_cursor_type(VteTerminal *terminal, int tag, GdkCursorType cursor_type)
 void
 vte_terminal_match_set_cursor_type (terminal, tag, cursor_type)
 	VteTerminal *terminal
@@ -634,7 +658,7 @@ vte_terminal_match_set_cursor_type (terminal, tag, cursor_type)
 
 #endif
 
-##  void vte_terminal_set_emulation(VteTerminal *terminal, const char *emulation) 
+##  void vte_terminal_set_emulation(VteTerminal *terminal, const char *emulation)
 void
 vte_terminal_set_emulation (terminal, emulation)
 	VteTerminal *terminal
@@ -645,7 +669,7 @@ const char *
 vte_terminal_get_emulation (terminal)
 	VteTerminal *terminal
 
-#if VTE_CHECK_VERSION (0, 11, 11)
+#if VTE_CHECK_VERSION (0, 12, 0)
 
 ##  const char *vte_terminal_get_default_emulation(VteTerminal *terminal)
 const char *
@@ -654,7 +678,7 @@ vte_terminal_get_default_emulation (terminal)
 
 #endif
 
-##  void vte_terminal_set_encoding(VteTerminal *terminal, const char *codeset) 
+##  void vte_terminal_set_encoding(VteTerminal *terminal, const char *codeset)
 void
 vte_terminal_set_encoding (terminal, codeset)
 	VteTerminal *terminal
@@ -670,36 +694,36 @@ const char *
 vte_terminal_get_status_line (terminal)
 	VteTerminal *terminal
 
-##  void vte_terminal_get_padding(VteTerminal *terminal, int *xpad, int *ypad) 
+##  void vte_terminal_get_padding(VteTerminal *terminal, int *xpad, int *ypad)
 void
 vte_terminal_get_padding (VteTerminal *terminal, OUTLIST int xpad, OUTLIST int ypad)
 
-##  GtkAdjustment *vte_terminal_get_adjustment(VteTerminal *terminal) 
+##  GtkAdjustment *vte_terminal_get_adjustment(VteTerminal *terminal)
 GtkAdjustment *
 vte_terminal_get_adjustment (terminal)
 	VteTerminal *terminal
 
-##  glong vte_terminal_get_char_ascent(VteTerminal *terminal) 
+##  glong vte_terminal_get_char_ascent(VteTerminal *terminal)
 glong
 vte_terminal_get_char_ascent (terminal)
 	VteTerminal *terminal
 
-##  glong vte_terminal_get_char_descent(VteTerminal *terminal) 
+##  glong vte_terminal_get_char_descent(VteTerminal *terminal)
 glong
 vte_terminal_get_char_descent (terminal)
 	VteTerminal *terminal
 
-##  glong vte_terminal_get_char_height(VteTerminal *terminal) 
+##  glong vte_terminal_get_char_height(VteTerminal *terminal)
 glong
 vte_terminal_get_char_height (terminal)
 	VteTerminal *terminal
 
-##  glong vte_terminal_get_char_width(VteTerminal *terminal) 
+##  glong vte_terminal_get_char_width(VteTerminal *terminal)
 glong
 vte_terminal_get_char_width (terminal)
 	VteTerminal *terminal
 
-##  glong vte_terminal_get_column_count(VteTerminal *terminal) 
+##  glong vte_terminal_get_column_count(VteTerminal *terminal)
 glong
 vte_terminal_get_column_count (terminal)
 	VteTerminal *terminal
@@ -709,7 +733,13 @@ const char *
 vte_terminal_get_icon_title (terminal)
 	VteTerminal *terminal
 
-##  glong vte_terminal_get_row_count(VteTerminal *terminal) 
+#if VTE_CHECK_VERSION (0, 12, 1)
+
+void vte_terminal_set_pty (VteTerminal *terminal, int pty_master);
+
+#endif
+
+##  glong vte_terminal_get_row_count(VteTerminal *terminal)
 glong
 vte_terminal_get_row_count (terminal)
 	VteTerminal *terminal

@@ -3,7 +3,7 @@ use strict;
 use Test::More;
 use Gnome2::Vte;
 
-# $Header: /cvsroot/gtk2-perl/gtk2-perl-xs/Gnome2-Vte/t/VteTerminal.t,v 1.8 2006/01/28 19:13:50 kaffeetisch Exp $
+# $Header: /cvsroot/gtk2-perl/gtk2-perl-xs/Gnome2-Vte/t/VteTerminal.t,v 1.10 2006/07/14 18:20:10 kaffeetisch Exp $
 
 unless (Gtk2 -> init_check()) {
   plan skip_all => "Couldn't initialize Gtk2";
@@ -42,6 +42,13 @@ $terminal -> copy_primary();
 $terminal -> paste_primary();
 $terminal -> set_size(81, 25);
 
+SKIP: {
+  skip "feed_child_binary", 0
+    unless Gnome2::Vte -> CHECK_VERSION(0, 12, 1);
+
+  $terminal -> feed_child_binary("...\0...");
+}
+
 $terminal -> set_audible_bell(1);
 is($terminal -> get_audible_bell(), 1);
 
@@ -64,8 +71,8 @@ $terminal -> set_color_dim($black);
 $terminal -> set_colors($black, $white, [$white, $black, $white, $black, $white, $black, $white, $black]);
 
 SKIP: {
-  skip("set_color_cursor and set_color_highlight are new in 0.11.11", 0)
-    unless (Gnome2::Vte -> CHECK_VERSION(0, 11, 11));
+  skip("set_color_cursor and set_color_highlight", 0)
+    unless (Gnome2::Vte -> CHECK_VERSION(0, 12, 0));
 
   $terminal -> set_color_cursor($black);
   $terminal -> set_color_highlight($black);
@@ -79,8 +86,8 @@ $terminal -> set_background_saturation(0.5);
 $terminal -> set_background_transparent(0.5);
 
 SKIP: {
-  skip("set_tint_color and set_scroll_background are new in 0.11.0", 0)
-    unless (Gnome2::Vte -> CHECK_VERSION(0, 11, 0));
+  skip("set_tint_color and set_scroll_background", 0)
+    unless (Gnome2::Vte -> CHECK_VERSION(0, 12, 0));
 
   $terminal -> set_background_tint_color($black);
   $terminal -> set_scroll_background(1);
@@ -93,8 +100,8 @@ $terminal -> set_font(Gtk2::Pango::FontDescription -> from_string("Monospace 10"
 $terminal -> set_font_from_string("Sans 12");
 
 SKIP: {
-  skip("set_font_full and set_font_from_string_full are new in 0.10.11", 0)
-    unless (Gnome2::Vte -> CHECK_VERSION(0, 11, 11));
+  skip("set_font_full and set_font_from_string_full", 0)
+    unless (Gnome2::Vte -> CHECK_VERSION(0, 12, 0));
 
   $terminal -> set_font_full(Gtk2::Pango::FontDescription -> from_string("Monospace 10"), "use-default");
   $terminal -> set_font_from_string_full("Sans 12", "force-disable");
@@ -103,7 +110,7 @@ SKIP: {
 isa_ok($terminal -> get_font(), "Gtk2::Pango::FontDescription");
 
 like($terminal -> get_using_xft(), qr/^(?:|1)$/);
-ok(not $terminal -> get_has_selection());
+ok(defined $terminal -> get_has_selection());
 
 $terminal -> set_word_chars("/");
 ok($terminal -> is_word_char("/"));
@@ -119,8 +126,8 @@ ok(defined($text));
 isa_ok($attributes, "ARRAY");
 
 SKIP: {
-  skip("get_text_include_trailing_spaces is new in 0.11.12", 2)
-    unless (Gnome2::Vte -> CHECK_VERSION(0, 11, 12));
+  skip("get_text_include_trailing_spaces", 2)
+    unless (Gnome2::Vte -> CHECK_VERSION(0, 12, 0));
 
   ($text, $attributes) = $terminal -> get_text_include_trailing_spaces(sub { 1; });
   ok(defined($text));
@@ -148,15 +155,15 @@ my $id = $terminal -> match_add(".*");
 ok(defined $terminal -> match_check(0, 10));
 
 SKIP: {
-  skip("match_set_cursor is new in 0.11.0", 0)
-    unless (Gnome2::Vte -> CHECK_VERSION(0, 11, 0));
+  skip("match_set_cursor", 0)
+    unless (Gnome2::Vte -> CHECK_VERSION(0, 12, 0));
 
   $terminal -> match_set_cursor($id, Gtk2::Gdk::Cursor -> new("arrow"));
 }
 
 SKIP: {
-  skip("match_set_cursor_type is new in 0.11.9", 0)
-    unless (Gnome2::Vte -> CHECK_VERSION(0, 11, 9));
+  skip("match_set_cursor_type", 0)
+    unless (Gnome2::Vte -> CHECK_VERSION(0, 12, 0));
 
   $terminal -> match_set_cursor_type($id, "arrow");
 }
@@ -167,8 +174,8 @@ $terminal -> set_emulation("xterm");
 is($terminal -> get_emulation(), "xterm");
 
 SKIP: {
-  skip("get_default_emulation is new in 0.11.11", 1)
-    unless (Gnome2::Vte -> CHECK_VERSION(0, 11, 11));
+  skip("get_default_emulation", 1)
+    unless (Gnome2::Vte -> CHECK_VERSION(0, 12, 0));
 
   ok(defined $terminal -> get_default_emulation());
 }
@@ -190,5 +197,12 @@ like($terminal -> get_row_count(), $number);
 
 is($terminal -> get_icon_title(), undef);
 is($terminal -> get_window_title(), undef);
+
+SKIP: {
+  skip "set_pty", 0
+    unless Gnome2::Vte -> CHECK_VERSION(0, 12, 1);
+
+  $terminal -> set_pty(fileno STDIN);
+}
 
 $terminal -> reset(1, 1);

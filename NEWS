@@ -1,3 +1,10 @@
+Overview of changes in Gnome2::Vte 0.06
+=======================================
+
+* Add new API:
+  - Gnome2::Vte::Terminal::feed_child_binary
+  - Gnome2::Vte::Terminal::set_pty
+
 Overview of changes in Gnome2::Vte 0.05
 =======================================
 

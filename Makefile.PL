@@ -6,7 +6,7 @@ use ExtUtils::MakeMaker;
 use Cwd;
 use File::Spec;
 
-# $Header: /cvsroot/gtk2-perl/gtk2-perl-xs/Gnome2-Vte/Makefile.PL,v 1.5 2004/02/14 15:40:59 kaffeetisch Exp $
+# $Header: /cvsroot/gtk2-perl/gtk2-perl-xs/Gnome2-Vte/Makefile.PL,v 1.7 2006/07/14 18:29:46 kaffeetisch Exp $
 
 our %build_reqs = (
   'perl-ExtUtils-Depends'   => '0.20',
@@ -14,6 +14,13 @@ our %build_reqs = (
   'perl-Glib'               => '1.01',
   'perl-Gtk2'               => '1.00',
   'Vte'                     => '0.10',
+);
+
+our %perl_reqs = (
+  'Glib'                => $build_reqs{'perl-Glib'},
+  'Gtk2'                => $build_reqs{'perl-Gtk2'},
+  'ExtUtils::Depends'   => $build_reqs{'perl-ExtUtils-Depends'},
+  'ExtUtils::PkgConfig' => $build_reqs{'perl-ExtUtils-PkgConfig'},
 );
 
 unless (eval "use ExtUtils::Depends '$build_reqs{'perl-ExtUtils-Depends'}';"
@@ -26,12 +33,7 @@ unless (eval "use ExtUtils::Depends '$build_reqs{'perl-ExtUtils-Depends'}';"
   warn "$@\n";
   WriteMakefile(
     PREREQ_FATAL => 1,
-    PREREQ_PM    => {
-      'Glib'                => $build_reqs{'perl-Glib'},
-      'Gtk2'                => $build_reqs{'perl-Gtk2'},
-      'ExtUtils::Depends'   => $build_reqs{'perl-ExtUtils-Depends'},
-      'ExtUtils::PkgConfig' => $build_reqs{'perl-ExtUtils-PkgConfig'},
-    },
+    PREREQ_PM    => \%perl_reqs,
   );
   exit 1; # not reached
 }
@@ -70,6 +72,7 @@ WriteMakefile(
   ABSTRACT_FROM => 'Vte.pm', # retrieve abstract from module
   XSPROTOARG    => '-noprototypes',
   MAN3PODS      => \%pod_files,
+  PREREQ_PM     => \%perl_reqs,
   $vte->get_makefile_vars,
 );
 
@@ -80,9 +83,9 @@ sub MY::postamble {
 		COPYRIGHT_FROM => 'copyright.pod')
 	     . Glib::MakeHelper->postamble_rpms (
 		'GNOME_VTE' => $build_reqs{'Vte'},
-		'PERL_EXTUTILS_DEPENDS' => 
+		'PERL_EXTUTILS_DEPENDS' =>
 			$build_reqs{'perl-ExtUtils-Depends'},
-		'PERL_EXTUTILS_PKGCONFIG' => 
+		'PERL_EXTUTILS_PKGCONFIG' =>
 			$build_reqs{'perl-ExtUtils-PkgConfig'},
 		'PERL_GLIB' => $build_reqs{'perl-Glib'},
 		'PERL_GTK' => $build_reqs{'perl-Gtk2'},
