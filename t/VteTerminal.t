@@ -3,7 +3,7 @@ use strict;
 use Test::More;
 use Gnome2::Vte;
 
-# $Header: /cvsroot/gtk2-perl/gtk2-perl-xs/Gnome2-Vte/t/VteTerminal.t,v 1.10 2006/07/14 18:20:10 kaffeetisch Exp $
+# $Header: /cvsroot/gtk2-perl/gtk2-perl-xs/Gnome2-Vte/t/VteTerminal.t,v 1.11 2006/09/23 12:18:57 kaffeetisch Exp $
 
 unless (Gtk2 -> init_check()) {
   plan skip_all => "Couldn't initialize Gtk2";
@@ -84,6 +84,13 @@ $terminal -> set_default_colors();
 # $terminal -> set_background_image_file();
 $terminal -> set_background_saturation(0.5);
 $terminal -> set_background_transparent(0.5);
+
+SKIP: {
+  skip "set_opacity", 0
+    unless Gnome2::Vte -> CHECK_VERSION(0, 14, 0);
+
+  $terminal -> set_opacity(0xffff);
+}
 
 SKIP: {
   skip("set_tint_color and set_scroll_background", 0)

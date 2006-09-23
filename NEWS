@@ -1,3 +1,9 @@
+Overview of changes in Gnome2::Vte 0.07
+=======================================
+
+* New API: Gnome2::Vte::Terminal::set_opacity.
+* Make sure that return values which contain UTF-8 have the UTF-8 flag set.
+
 Overview of changes in Gnome2::Vte 0.06
 =======================================
 

@@ -1,3 +1,18 @@
+2006-09-23	kaffeetisch
+
+	* NEWS, Vte.pm: Version 0.07.
+
+2006-09-23	kaffeetisch
+
+	* t/VteTerminal.t, xs/VteTerminal.xs: Bind and test
+	vte_terminal_set_opacity.
+
+2006-09-23	kaffeetisch
+
+	* xs/VteTerminal.xs: Use the gchar* wrappers for return values
+	where appropriate to make sure the resulting scalars have the utf8
+	bit set.
+
 2006-07-14	kaffeetisch
 
 	* Makefile.PL, NEWS, Vte.pm, copyright.pod: Version 0.06.

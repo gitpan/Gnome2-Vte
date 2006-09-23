@@ -15,7 +15,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- * $Header: /cvsroot/gtk2-perl/gtk2-perl-xs/Gnome2-Vte/xs/VteTerminal.xs,v 1.9 2006/07/14 18:20:10 kaffeetisch Exp $
+ * $Header: /cvsroot/gtk2-perl/gtk2-perl-xs/Gnome2-Vte/xs/VteTerminal.xs,v 1.11 2006/09/23 12:18:57 kaffeetisch Exp $
  */
 
 #include "vte2perl.h"
@@ -380,6 +380,12 @@ vte_terminal_set_background_transparent (terminal, transparent)
 	VteTerminal *terminal
 	gboolean transparent
 
+#if VTE_CHECK_VERSION (0, 14, 0)
+
+void vte_terminal_set_opacity (VteTerminal *terminal, guint16 opacity);
+
+#endif
+
 #if VTE_CHECK_VERSION (0, 12, 0)
 
 ##  void vte_terminal_set_background_tint_color(VteTerminal *terminal, const GdkColor *color)
@@ -527,7 +533,7 @@ vte_terminal_get_text (terminal, func, data=NULL)
 	text = vte_terminal_get_text (terminal, vte2perl_is_selected, callback, attributes);
 
 	EXTEND (sp, 2);
-	PUSHs (sv_2mortal (newSVpv (text, PL_na)));
+	PUSHs (sv_2mortal (newSVGChar (text)));
 	PUSHs (sv_2mortal (newSVVteCharAttributes (attributes)));
 
 	g_array_free(attributes, TRUE);
@@ -563,7 +569,7 @@ vte_terminal_get_text_include_trailing_spaces (terminal, func, data=NULL)
 	text = vte_terminal_get_text_include_trailing_spaces (terminal, vte2perl_is_selected, callback, attributes);
 
 	EXTEND (sp, 2);
-	PUSHs (sv_2mortal (newSVpv (text, PL_na)));
+	PUSHs (sv_2mortal (newSVGChar (text)));
 	PUSHs (sv_2mortal (newSVVteCharAttributes (attributes)));
 
 	g_array_free(attributes, TRUE);
@@ -603,7 +609,7 @@ vte_terminal_get_text_range (terminal, start_row, start_col, end_row, end_col, f
 	text = vte_terminal_get_text_range (terminal, start_row, start_col, end_row, end_col, vte2perl_is_selected, callback, attributes);
 
 	EXTEND (sp, 2);
-	PUSHs (sv_2mortal (newSVpv (text, PL_na)));
+	PUSHs (sv_2mortal (newSVGChar (text)));
 	PUSHs (sv_2mortal (newSVVteCharAttributes (attributes)));
 
 	g_array_free(attributes, TRUE);
@@ -631,7 +637,7 @@ vte_terminal_match_remove (terminal, tag)
 	int tag
 
 ##  char *vte_terminal_match_check(VteTerminal *terminal, glong column, glong row, int *tag)
-char *
+gchar *
 vte_terminal_match_check (VteTerminal *terminal, glong column, glong row, OUTLIST int tag)
     CLEANUP:
 	g_free (RETVAL);
@@ -690,7 +696,7 @@ vte_terminal_get_encoding (terminal)
 	VteTerminal *terminal
 
 ##  const char *vte_terminal_get_status_line(VteTerminal *terminal)
-const char *
+const gchar *
 vte_terminal_get_status_line (terminal)
 	VteTerminal *terminal
 
@@ -729,7 +735,7 @@ vte_terminal_get_column_count (terminal)
 	VteTerminal *terminal
 
 ##  const char *vte_terminal_get_icon_title(VteTerminal *terminal)
-const char *
+const gchar *
 vte_terminal_get_icon_title (terminal)
 	VteTerminal *terminal
 
@@ -745,6 +751,6 @@ vte_terminal_get_row_count (terminal)
 	VteTerminal *terminal
 
 ##  const char *vte_terminal_get_window_title(VteTerminal *terminal)
-const char *
+const gchar *
 vte_terminal_get_window_title (terminal)
 	VteTerminal *terminal
