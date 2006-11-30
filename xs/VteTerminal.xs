@@ -15,7 +15,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- * $Header: /cvsroot/gtk2-perl/gtk2-perl-xs/Gnome2-Vte/xs/VteTerminal.xs,v 1.11 2006/09/23 12:18:57 kaffeetisch Exp $
+ * $Header: /cvsroot/gtk2-perl/gtk2-perl-xs/Gnome2-Vte/xs/VteTerminal.xs,v 1.12 2006/11/30 18:50:45 kaffeetisch Exp $
  */
 
 #include "vte2perl.h"
@@ -72,7 +72,7 @@ GdkColor *SvVteGdkColorArray (SV *ref, glong *size)
 	return result;
 }
 
-#if !VTE_CHECK_VERSION (0, 12, 0)
+#if !VTE_CHECK_VERSION (0, 11, 11)
   typedef struct vte_char_attributes VteCharAttributes;
 #endif
 
@@ -88,8 +88,8 @@ newSVVteCharAttributes (GArray *text_array)
 
 		hv_store (hash, "row", 3, newSViv (text_attributes->row), 0);
 		hv_store (hash, "column", 6, newSViv (text_attributes->column), 0);
-		hv_store (hash, "fore", 4, newSVGdkColor (&text_attributes->fore), 0);
-		hv_store (hash, "back", 4, newSVGdkColor (&text_attributes->back), 0);
+		hv_store (hash, "fore", 4, newSVGdkColor_copy (&text_attributes->fore), 0);
+		hv_store (hash, "back", 4, newSVGdkColor_copy (&text_attributes->back), 0);
 		hv_store (hash, "underline", 9, newSVuv (text_attributes->underline), 0);
 		hv_store (hash, "strikethrough", 13, newSVuv (text_attributes->strikethrough), 0);
 
@@ -154,7 +154,7 @@ vte_terminal_fork_command (terminal, command, arg_ref, env_ref, directory, lastl
 	const char *command
 	SV *arg_ref
 	SV *env_ref
-	const char *directory
+	const char_ornull *directory
 	gboolean lastlog
 	gboolean utmp
 	gboolean wtmp
@@ -320,13 +320,13 @@ vte_terminal_set_color_dim (terminal, dim)
 void
 vte_terminal_set_color_cursor (terminal, cursor_background)
 	VteTerminal *terminal
-	const GdkColor *cursor_background
+	const GdkColor_ornull *cursor_background
 
 ##  void vte_terminal_set_color_highlight (VteTerminal *terminal, const GdkColor *highlight_background)
 void
 vte_terminal_set_color_highlight (terminal, highlight_background)
 	VteTerminal *terminal
-	const GdkColor *highlight_background
+	const GdkColor_ornull *highlight_background
 
 #endif
 
@@ -334,8 +334,8 @@ vte_terminal_set_color_highlight (terminal, highlight_background)
 void
 vte_terminal_set_colors (terminal, foreground, background, palette_ref)
 	VteTerminal *terminal
-	const GdkColor *foreground
-	const GdkColor *background
+	const GdkColor_ornull *foreground
+	const GdkColor_ornull *background
 	SV *palette_ref
     PREINIT:
 	GdkColor *palette = NULL;
@@ -360,7 +360,7 @@ vte_terminal_set_default_colors (terminal)
 void
 vte_terminal_set_background_image (terminal, image)
 	VteTerminal *terminal
-	GdkPixbuf *image
+	GdkPixbuf_ornull *image
 
 ##  void vte_terminal_set_background_image_file(VteTerminal *terminal, const char *path)
 void
@@ -432,7 +432,7 @@ vte_terminal_set_font_from_string (terminal, name)
 void
 vte_terminal_set_font_full (terminal, font_desc, anti_alias)
 	VteTerminal *terminal
-	const PangoFontDescription *font_desc
+	const PangoFontDescription_ornull *font_desc
 	VteTerminalAntiAlias anti_alias
 
 ##  void vte_terminal_set_font_from_string_full(VteTerminal *terminal, const char *name, VteTerminalAntiAlias anti_alias)
@@ -467,7 +467,7 @@ vte_terminal_get_has_selection (terminal)
 void
 vte_terminal_set_word_chars (terminal, spec)
 	VteTerminal *terminal
-	const char *spec
+	const char_ornull *spec
 
 ##  gboolean vte_terminal_is_word_char(VteTerminal *terminal, gunichar c)
 gboolean
@@ -513,7 +513,7 @@ describing every character in that text.
 =cut
 #  char *vte_terminal_get_text(VteTerminal *terminal, gboolean(*is_selected)(VteTerminal *terminal, glong column, glong row, gpointer data), gpointer data, GArray *attributes)
 void
-vte_terminal_get_text (terminal, func, data=NULL)
+vte_terminal_get_text (terminal, func=NULL, data=NULL)
 	VteTerminal *terminal
 	SV *func
 	SV *data
@@ -522,7 +522,9 @@ vte_terminal_get_text (terminal, func, data=NULL)
 	GArray *attributes;
 	char *text = "";
     PPCODE:
-	callback = vte2perl_is_selected_create (func, data);
+	callback = func && SvOK (func)
+		? vte2perl_is_selected_create (func, data)
+		: NULL;
 	attributes = g_array_new (FALSE, TRUE, sizeof (VteCharAttributes));
 
 	g_object_set_data_full (G_OBJECT (terminal),
@@ -530,7 +532,9 @@ vte_terminal_get_text (terminal, func, data=NULL)
 	                        callback,
 	                        (GDestroyNotify) gperl_callback_destroy);
 
-	text = vte_terminal_get_text (terminal, vte2perl_is_selected, callback, attributes);
+	text = callback
+		? vte_terminal_get_text (terminal, vte2perl_is_selected, callback, attributes)
+		: vte_terminal_get_text (terminal, NULL, NULL, attributes);
 
 	EXTEND (sp, 2);
 	PUSHs (sv_2mortal (newSVGChar (text)));

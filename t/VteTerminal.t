@@ -1,15 +1,16 @@
 #!/usr/bin/perl -w
 use strict;
 use Test::More;
+use Glib qw(TRUE FALSE);
 use Gnome2::Vte;
 
-# $Header: /cvsroot/gtk2-perl/gtk2-perl-xs/Gnome2-Vte/t/VteTerminal.t,v 1.11 2006/09/23 12:18:57 kaffeetisch Exp $
+# $Header: /cvsroot/gtk2-perl/gtk2-perl-xs/Gnome2-Vte/t/VteTerminal.t,v 1.12 2006/11/30 18:50:45 kaffeetisch Exp $
 
 unless (Gtk2 -> init_check()) {
   plan skip_all => "Couldn't initialize Gtk2";
 }
 else {
-  plan tests => 39;
+  plan tests => 47;
 }
 
 ###############################################################################
@@ -32,6 +33,11 @@ like($terminal -> fork_command("/bin/ls",
                                ["/bin/ls", "--color", "-l", "bin"],
                                ["TERM=xterm-color"],
                                "/",
+                               0, 0, 0), $number);
+like($terminal -> fork_command("/bin/ls",
+                               ["/bin/ls", "--color", "-l", "bin"],
+                               ["TERM=xterm-color"],
+                               undef,
                                0, 0, 0), $number);
 
 $terminal -> feed("BLA!\n");
@@ -69,18 +75,23 @@ $terminal -> set_color_foreground($black);
 $terminal -> set_color_background($white);
 $terminal -> set_color_dim($black);
 $terminal -> set_colors($black, $white, [$white, $black, $white, $black, $white, $black, $white, $black]);
+$terminal -> set_colors(undef, undef, [$white, $black, $white, $black, $white, $black, $white, $black]);
 
 SKIP: {
   skip("set_color_cursor and set_color_highlight", 0)
     unless (Gnome2::Vte -> CHECK_VERSION(0, 12, 0));
 
   $terminal -> set_color_cursor($black);
+  $terminal -> set_color_cursor(undef);
   $terminal -> set_color_highlight($black);
+  $terminal -> set_color_highlight(undef);
 }
 
 $terminal -> set_default_colors();
 
-# $terminal -> set_background_image();
+my $pixbuf = Gtk2::Gdk::Pixbuf -> new("rgb", TRUE, 8, 10, 10);
+$terminal -> set_background_image($pixbuf);
+$terminal -> set_background_image(undef);
 # $terminal -> set_background_image_file();
 $terminal -> set_background_saturation(0.5);
 $terminal -> set_background_transparent(0.5);
@@ -111,6 +122,7 @@ SKIP: {
     unless (Gnome2::Vte -> CHECK_VERSION(0, 12, 0));
 
   $terminal -> set_font_full(Gtk2::Pango::FontDescription -> from_string("Monospace 10"), "use-default");
+  $terminal -> set_font_full(undef, "use-default");
   $terminal -> set_font_from_string_full("Sans 12", "force-disable");
 }
 
@@ -121,6 +133,8 @@ ok(defined $terminal -> get_has_selection());
 
 $terminal -> set_word_chars("/");
 ok($terminal -> is_word_char("/"));
+$terminal -> set_word_chars(undef);
+ok(!$terminal -> is_word_char("/"));
 
 $terminal -> set_backspace_binding("ascii-backspace");
 $terminal -> set_delete_binding("ascii-delete");
@@ -129,6 +143,10 @@ $terminal -> set_mouse_autohide(1);
 ok($terminal -> get_mouse_autohide());
 
 my ($text, $attributes) = $terminal -> get_text(sub { 1; });
+ok(defined($text));
+isa_ok($attributes, "ARRAY");
+
+($text, $attributes) = $terminal -> get_text();
 ok(defined($text));
 isa_ok($attributes, "ARRAY");
 
@@ -152,6 +170,11 @@ ok(exists($attributes -> [0] -> { fore }));
 ok(exists($attributes -> [0] -> { back }));
 ok(exists($attributes -> [0] -> { row }));
 ok(exists($attributes -> [0] -> { column }));
+
+isa_ok($attributes -> [0] -> { fore }, "Gtk2::Gdk::Color");
+ok(defined $attributes -> [0] -> { fore } -> hash());
+isa_ok($attributes -> [0] -> { back }, "Gtk2::Gdk::Color");
+ok(defined $attributes -> [0] -> { back } -> hash());
 
 is_deeply([$terminal -> get_cursor_position()], [0, 0]);
 

@@ -1,3 +1,19 @@
+2006-11-30	kaffeetisch
+
+	* NEWS, Vte.pm: Version 0.08.
+
+2006-11-30	kaffeetisch
+
+	* VteTerminal.xs: Fix compilation error with vte 0.11.11.
+
+	* t/VteTerminal.t, xs/VteTerminal.xs: Fix potential crash when
+	trying to access the "back" and "fore" members of char attributes.
+
+	* t/VteTerminal.t, xs/VteTerminal.xs: Allow undef as a parameter
+	where appropriate: Gnome2::Vte::Terminal::fork_command,
+	set_color_cursor, set_color_highlight, set_colors,
+	set_background_image, set_font_full, set_word_chars, and get_text.
+
 2006-09-23	kaffeetisch
 
 	* NEWS, Vte.pm: Version 0.07.
