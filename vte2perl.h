@@ -15,7 +15,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- * $Header: /cvsroot/gtk2-perl/gtk2-perl-xs/Gnome2-Vte/vte2perl.h,v 1.1 2003/11/25 21:28:00 kaffeetisch Exp $
+ * $Id: vte2perl.h 50 2008-10-05 12:49:33Z tsch $
  */
 
 #ifndef _VTE2PERL_H_

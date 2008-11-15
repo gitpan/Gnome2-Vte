@@ -4,10 +4,11 @@ blib
 \.bs$
 build
 \.c$
-CVS
+\.svn
 \.cvsignore$
 Makefile$
 Makefile\.old$
+MAINTAINERS$
 \.o$
 \.spec$
 \.sw.$

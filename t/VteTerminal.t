@@ -4,7 +4,7 @@ use Test::More;
 use Glib qw(TRUE FALSE);
 use Gnome2::Vte;
 
-# $Header: /cvsroot/gtk2-perl/gtk2-perl-xs/Gnome2-Vte/t/VteTerminal.t,v 1.12 2006/11/30 18:50:45 kaffeetisch Exp $
+# $Id: VteTerminal.t 50 2008-10-05 12:49:33Z tsch $
 
 unless (Gtk2 -> init_check()) {
   plan skip_all => "Couldn't initialize Gtk2";

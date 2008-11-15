@@ -6,7 +6,7 @@ use ExtUtils::MakeMaker;
 use Cwd;
 use File::Spec;
 
-# $Header: /cvsroot/gtk2-perl/gtk2-perl-xs/Gnome2-Vte/Makefile.PL,v 1.7 2006/07/14 18:29:46 kaffeetisch Exp $
+# $Id: Makefile.PL 52 2008-11-15 13:21:24Z tsch $
 
 our %build_reqs = (
   'perl-ExtUtils-Depends'   => '0.20',
@@ -38,7 +38,13 @@ unless (eval "use ExtUtils::Depends '$build_reqs{'perl-ExtUtils-Depends'}';"
   exit 1; # not reached
 }
 
-my %pkgcfg = ExtUtils::PkgConfig->find("vte >= $build_reqs{'Vte'}");
+my %pkgcfg;
+unless (eval { %pkgcfg = ExtUtils::PkgConfig->find("vte >= $build_reqs{'Vte'}");
+	       1; })
+{
+  warn $@;
+  exit 0;
+}
 
 mkdir 'build', 0777;
 
@@ -73,6 +79,7 @@ WriteMakefile(
   XSPROTOARG    => '-noprototypes',
   MAN3PODS      => \%pod_files,
   PREREQ_PM     => \%perl_reqs,
+  META_MERGE    => { configure_requires => \%perl_reqs },
   $vte->get_makefile_vars,
 );
 

@@ -1,15 +1,26 @@
 --- #YAML:1.0
-name:                Gnome2-Vte
-version:             0.08
-abstract:            Perl interface to the Virtual Terminal Emulation library
-license:             ~
-generated_by:        ExtUtils::MakeMaker version 6.31
-distribution_type:   module
-requires:     
-    ExtUtils::Depends:             0.20
-    ExtUtils::PkgConfig:           1.03
-    Glib:                          1.01
-    Gtk2:                          1.00
+name:               Gnome2-Vte
+version:            0.09
+abstract:           Perl interface to the Virtual Terminal Emulation library
+author:  []
+license:            unknown
+distribution_type:  module
+configure_requires:
+    ExtUtils::Depends:    0.20
+    ExtUtils::MakeMaker:  0
+    ExtUtils::PkgConfig:  1.03
+    Glib:                 1.01
+    Gtk2:                 1.00
+requires:
+    ExtUtils::Depends:    0.20
+    ExtUtils::PkgConfig:  1.03
+    Glib:                 1.01
+    Gtk2:                 1.00
+no_index:
+    directory:
+        - t
+        - inc
+generated_by:       ExtUtils::MakeMaker version 6.48
 meta-spec:
-    url:     http://module-build.sourceforge.net/META-spec-v1.2.html
-    version: 1.2
+    url:      http://module-build.sourceforge.net/META-spec-v1.4.html
+    version:  1.4

@@ -1,6 +1,6 @@
 package Gnome2::Vte;
 
-# $Header: /cvsroot/gtk2-perl/gtk2-perl-xs/Gnome2-Vte/Vte.pm,v 1.15 2006/11/30 18:53:40 kaffeetisch Exp $
+# $Id: Vte.pm 53 2008-11-15 13:25:24Z tsch $
 
 use 5.008;
 use strict;
@@ -12,7 +12,7 @@ require DynaLoader;
 
 our @ISA = qw(DynaLoader);
 
-our $VERSION = '0.08';
+our $VERSION = '0.09';
 
 sub import {
   my $self = shift();

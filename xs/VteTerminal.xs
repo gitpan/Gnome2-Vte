@@ -15,7 +15,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- * $Header: /cvsroot/gtk2-perl/gtk2-perl-xs/Gnome2-Vte/xs/VteTerminal.xs,v 1.12 2006/11/30 18:50:45 kaffeetisch Exp $
+ * $Id: VteTerminal.xs 50 2008-10-05 12:49:33Z tsch $
  */
 
 #include "vte2perl.h"
@@ -641,10 +641,17 @@ vte_terminal_match_remove (terminal, tag)
 	int tag
 
 ##  char *vte_terminal_match_check(VteTerminal *terminal, glong column, glong row, int *tag)
-gchar *
-vte_terminal_match_check (VteTerminal *terminal, glong column, glong row, OUTLIST int tag)
-    CLEANUP:
-	g_free (RETVAL);
+void
+vte_terminal_match_check (VteTerminal *terminal, glong column, glong row)
+    PREINIT:
+	gchar *match;
+	int tag;
+    PPCODE:
+	match = vte_terminal_match_check (terminal, column, row, &tag);
+	EXTEND (SP, 2);
+	PUSHs (sv_2mortal (newSVGChar (match)));
+	PUSHs (sv_2mortal (newSViv (tag)));
+	g_free (match);
 
 #if VTE_CHECK_VERSION (0, 12, 0)
 
