@@ -1,6 +1,6 @@
 package Gnome2::Vte;
 
-# $Id: Vte.pm 53 2008-11-15 13:25:24Z tsch $
+# $Id$
 
 use 5.008;
 use strict;
@@ -12,7 +12,7 @@ require DynaLoader;
 
 our @ISA = qw(DynaLoader);
 
-our $VERSION = '0.09';
+our $VERSION = '0.10';
 
 sub import {
   my $self = shift();

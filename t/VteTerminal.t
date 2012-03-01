@@ -4,7 +4,7 @@ use Test::More;
 use Glib qw(TRUE FALSE);
 use Gnome2::Vte;
 
-# $Id: VteTerminal.t 50 2008-10-05 12:49:33Z tsch $
+# $Id$
 
 unless (Gtk2 -> init_check()) {
   plan skip_all => "Couldn't initialize Gtk2";
@@ -232,7 +232,8 @@ SKIP: {
   skip "set_pty", 0
     unless Gnome2::Vte -> CHECK_VERSION(0, 12, 1);
 
-  $terminal -> set_pty(fileno STDIN);
+  # Cannot reliably test this without causing segfaults or assertions.
+  # $terminal -> set_pty(fileno STDIN);
 }
 
 $terminal -> reset(1, 1);

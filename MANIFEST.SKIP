@@ -4,10 +4,10 @@ blib
 \.bs$
 build
 \.c$
-\.svn
-\.cvsignore$
+\.git
 Makefile$
 Makefile\.old$
+MYMETA\..*$
 MAINTAINERS$
 \.o$
 \.spec$
