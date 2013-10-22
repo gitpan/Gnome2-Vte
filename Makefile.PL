@@ -16,11 +16,44 @@ our %build_reqs = (
   'Vte'                     => '0.10',
 );
 
-our %perl_reqs = (
+our %prereqs = (
   'Glib'                => $build_reqs{'perl-Glib'},
   'Gtk2'                => $build_reqs{'perl-Gtk2'},
   'ExtUtils::Depends'   => $build_reqs{'perl-ExtUtils-Depends'},
   'ExtUtils::PkgConfig' => $build_reqs{'perl-ExtUtils-PkgConfig'},
+);
+
+my %meta_merge = (
+    q(meta-spec)          => {
+        version => '2',
+        url     => 'http://search.cpan.org/perldoc?CPAN::Meta::Spec',
+    },
+    author              =>
+        ['Cairo Perl Team <gtk-perl-list at gnome dot org>'],
+    release_status      => 'stable',
+    # valid values: https://metacpan.org/module/CPAN::Meta::Spec#license
+    license             => 'lgpl_2_1',
+    resources => {
+        license     => 'http://www.gnu.org/licenses/lgpl-2.1.html',
+        homepage    => 'http://gtk2-perl.sourceforge.net',
+        x_MailingList =>
+            'https://mail.gnome.org/mailman/listinfo/gtk-perl-list',
+        bugtracker  => {
+                web     =>
+                'http://rt.cpan.org/Public/Dist/Display.html?Name=Gnome2-Vte',
+                mailto  => 'bug-Gnome2-Vte [at] rt.cpan.org',
+        },
+        repository  => {
+                url     => 'git://git.gnome.org/perl-Gnome2-Vte',
+                type    => 'git',
+                web     => 'http://git.gnome.org/browse/perl-Gnome2-Vte',
+        },
+    },
+    prereqs => {
+      configure => {
+        requires => {%prereqs}, # no direct ref for 5.14 compatibility
+      },
+    },
 );
 
 unless (eval "use ExtUtils::Depends '$build_reqs{'perl-ExtUtils-Depends'}';"
@@ -33,7 +66,7 @@ unless (eval "use ExtUtils::Depends '$build_reqs{'perl-ExtUtils-Depends'}';"
   warn "$@\n";
   WriteMakefile(
     PREREQ_FATAL => 1,
-    PREREQ_PM    => \%perl_reqs,
+    PREREQ_PM    => \%prereqs,
   );
   exit 1; # not reached
 }
@@ -78,8 +111,8 @@ WriteMakefile(
   ABSTRACT_FROM => 'Vte.pm', # retrieve abstract from module
   XSPROTOARG    => '-noprototypes',
   MAN3PODS      => \%pod_files,
-  PREREQ_PM     => \%perl_reqs,
-  META_MERGE    => { configure_requires => \%perl_reqs },
+  PREREQ_PM     => \%prereqs,
+  META_MERGE    => \%meta_merge,
   $vte->get_makefile_vars,
 );
 
